@@ -20,7 +20,7 @@ class m260415_112514_add_education_table extends Migration
         'description' => $this->text(),
     ]);
 
-    $this->addForeignKey('fk-education-resume', '{{%resume_education}}', 'resume_id', '{{%resume}}', 'id', 'CASCADE');
+    // $this->addForeignKey('fk-education-resume', '{{%resume_education}}', 'resume_id', '{{%resume}}', 'id', 'CASCADE');
 }
 
     /**

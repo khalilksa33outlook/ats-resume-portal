@@ -47,5 +47,10 @@ return [
         ],
         */
     ],
+    'on beforeAction' => function ($event) {
+        if (Yii::$app->session->has('language')) {
+            Yii::$app->language = Yii::$app->session->get('language');
+        }
+    },
     'params' => $params,
 ];

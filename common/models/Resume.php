@@ -47,7 +47,7 @@ class Resume extends \yii\db\ActiveRecord
             [['summary', 'created_at', 'updated_at'], 'default', 'value' => null],
             [['language'], 'default', 'value' => 'en'],
             [['is_paid'], 'default', 'value' => 0],
-            [['user_id', 'title'], 'required'],
+            [['title'], 'required'],
             [['user_id', 'is_paid', 'created_at', 'updated_at'], 'integer'],
             [['summary'], 'string'],
             [['title'], 'string', 'max' => 255],

@@ -33,7 +33,7 @@ class m260415_094959_create_resume_tables extends Migration
     ]);
 
     // Add Foreign Key for Experience
-    $this->addForeignKey('fk-experience-resume', '{{%resume_experience}}', 'resume_id', '{{%resume}}', 'id', 'CASCADE');
+    // $this->addForeignKey('fk-experience-resume', '{{%resume_experience}}', 'resume_id', '{{%resume}}', 'id', 'CASCADE');
     }
 
     /**

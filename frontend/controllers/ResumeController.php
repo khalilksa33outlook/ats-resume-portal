@@ -1,60 +1,79 @@
+<?php
+
 namespace frontend\controllers;
 
 use Yii;
-use common\models\Resume; // Ensure you have this model
+use common\models\Resume;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 
-public function behaviors()
-{
-    return [
-        'access' => [
-            'class' => AccessControl::class,
-            'only' => ['create', 'update', 'download', 'delete'], // Actions to protect
-            'rules' => [
-                [
-                    'actions' => ['create', 'update', 'download', 'delete'],
-                    'allow' => true,
-                    'roles' => ['@'], // '@' means only authenticated (logged-in) users
-                ],
-            ],
-        ],
-        'verbs' => [
-            'class' => VerbFilter::class,
-            'actions' => [
-                'delete' => ['POST'], // Security: Only allow deletion via POST
-            ],
-        ],
-    ];
-}
-
 class ResumeController extends Controller
 {
-    // ... other actions (index, view, create) ...
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'only' => ['update', 'download', 'delete'],
+                'rules' => [
+                    [
+                        'actions' => ['update', 'download', 'delete'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'delete' => ['POST'],
+                ],
+            ],
+        ];
+    }
 
-    /**
-     * Handles the PDF download logic
-     * @param int $id The ID of the resume
-     */
-    public function actionDownload($id) 
+    public function actionCreate()
+    {
+        $model = new Resume();
+        if (!Yii::$app->user->isGuest) {
+            $model->user_id = Yii::$app->user->id;
+        }
+        $model->created_at = time();
+        $model->updated_at = time();
+
+        if ($model->load(Yii::$app->request->post())) {
+            $model->updated_at = time();
+            if ($model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
+        }
+
+        return $this->render('create', [
+            'model' => $model,
+        ]);
+    }
+
+    public function actionView($id)
+    {
+        return $this->render('view', [
+            'model' => $this->findModel($id),
+        ]);
+    }
+
+    public function actionDownload($id)
     {
         $model = $this->findModel($id);
 
-        // Check if the user has paid
         if (!$model->is_paid) {
             Yii::$app->session->setFlash('info', 'Please complete the payment to download your professional resume.');
             return $this->redirect(['payment/checkout', 'resume_id' => $id]);
         }
 
-        // If paid, call your PDF generation logic (e.g., using mPDF)
         return $this->generatePdf($model);
     }
 
-    /**
-     * Finds the Resume model based on its primary key value.
-     */
     protected function findModel($id)
     {
         if (($model = Resume::findOne($id)) !== null) {
