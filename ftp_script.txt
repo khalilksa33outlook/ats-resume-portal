@@ -1,0 +1,6 @@
+open 145.223.77.119
+u998578075.dynapulsar.com
+**pp7J7xpzz**
+cd /
+mput *
+quit
